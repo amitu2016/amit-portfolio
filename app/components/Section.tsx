@@ -1,18 +1,27 @@
 'use client';
 
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, MotionValue } from 'framer-motion';
+import { ReactNode } from 'react';
 
 interface SectionProps {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function Section({ title, children }: SectionProps) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const rotateX = useTransform(y, [-0.5, 0.5], [10, -10]);
-  const rotateY = useTransform(x, [-0.5, 0.5], [-10, 10]);
+  const springX = useSpring(x, { stiffness: 150, damping: 20 });
+  const springY = useSpring(y, { stiffness: 150, damping: 20 });
+
+  const rotateX = useTransform(springY, [-0.5, 0.5], [10, -10]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-10, 10]);
+  const boxShadow: MotionValue<string> = useTransform(
+    springX,
+    [-0.5, 0.5],
+    ['-10px 10px 30px rgba(0,0,0,0.2)', '10px -10px 30px rgba(0,0,0,0.4)']
+  );
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -29,7 +38,7 @@ export default function Section({ title, children }: SectionProps) {
 
   return (
     <motion.section
-      className="my-8 p-6 bg-gradient-to-br from-purple-900 to-blue-900 rounded-lg shadow-lg"
+      className="my-10 p-8 bg-gradient-to-br from-purple-900/90 to-blue-900/90 backdrop-blur-md rounded-2xl border border-purple-800/50 transition-all duration-300"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
@@ -38,12 +47,15 @@ export default function Section({ title, children }: SectionProps) {
         rotateX,
         rotateY,
         transformStyle: 'preserve-3d',
+        boxShadow,
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ scale: 1.04 }}
     >
-      <h2 className="text-2xl font-semibold text-blue-400 mb-4">{title}</h2>
+      <h2 className="text-3xl font-bold text-blue-300 mb-6 drop-shadow-md">
+        {title}
+      </h2>
       <div>{children}</div>
     </motion.section>
   );

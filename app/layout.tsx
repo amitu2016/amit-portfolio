@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import MeteorShower from './components/MeteorShower';
 
 export const metadata: Metadata = {
   title: "Amit Kumar Upadhyay - Portfolio",
@@ -15,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-900 text-white">
-        <MeteorShower />
+        <div className="stars" />
         {children}
       </body>
     </html>

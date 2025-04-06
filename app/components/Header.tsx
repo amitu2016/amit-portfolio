@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import Image from 'next/image'; // Add this import at the top
-
+import Image from 'next/image';
+import { FaEnvelope, FaLinkedin, FaGithub, FaMedium, FaFileDownload } from 'react-icons/fa';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,77 +11,93 @@ export default function Header() {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const navItems = [
-    { href: 'mailto:amitu2016@gmail.com', label: 'Email' },
-    { href: 'https://linkedin.com/in/upadhyayamitk', label: 'LinkedIn', external: true },
-    { href: 'https://github.com/amitu2016', label: 'GitHub', external: true },
-    { href: 'https://medium.com/@amitu2016', label: 'Medium', external: true },
-    { href: '/Amit_Kumar_Upadhyay_Resume.pdf', label: 'Download Resume', download: true },
+    { href: 'mailto:amitu2016@gmail.com', label: 'Email', icon: <FaEnvelope /> },
+    { href: 'https://linkedin.com/in/upadhyayamitk', label: 'LinkedIn', icon: <FaLinkedin />, external: true },
+    { href: 'https://github.com/amitu2016', label: 'GitHub', icon: <FaGithub />, external: true },
+    { href: 'https://medium.com/@amitu2016', label: 'Medium', icon: <FaMedium />, external: true },
+    { href: '/Amit_Kumar_Upadhyay_Resume.pdf', label: 'Download Resume', icon: <FaFileDownload />, download: true },
   ];
 
   return (
     <motion.header
-      className="bg-gradient-to-br from-purple-900 to-blue-900 text-white p-6 shadow-lg z-40"
+      className="bg-gradient-to-br from-purple-900/90 to-blue-900/90 backdrop-blur-md text-white p-6 shadow-xl sticky top-0 z-40 border-b border-purple-700/50"
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      style={{ perspective: '1000px' }}
+      transition={{ duration: 0.8, ease: 'easeOut' }}
+      whileHover={{ boxShadow: '0 0 20px rgba(147, 51, 234, 0.4)' }}
     >
       <div className="container mx-auto flex justify-between items-center">
+        {/* Left Section: Profile Image and Name */}
         <motion.div
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5 }}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           className="flex items-center space-x-4"
         >
-          {/* Uncomment and add your image in /public/profile.jpg */}
-          <Image
-  src="/profile.jpeg"
-  alt="Amit"
-  width={64}
-  height={64}
-  className="rounded-full border-2 border-white"
-/>
-
-          <h1 className="text-3xl font-bold">Amit Kumar Upadhyay</h1>
+          <motion.div
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
+            <Image
+              src="/profile.jpeg"
+              alt="Amit"
+              width={64}
+              height={64}
+              className="rounded-full border-2 border-purple-300 shadow-md object-cover"
+            />
+          </motion.div>
+          <h1 className="text-4xl font-bold text-blue-300 tracking-tight">Amit Kumar Upadhyay</h1>
         </motion.div>
 
-        {/* Hamburger Button (visible on mobile) */}
+        {/* Hamburger Button (Mobile) */}
         <button
-          className="md:hidden text-white focus:outline-none z-20"
+          className="md:hidden text-white focus:outline-none z-50"
           onClick={toggleMenu}
           aria-label="Toggle menu"
         >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <motion.svg
+            className="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
               d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
             />
-          </svg>
+          </motion.svg>
         </button>
 
         {/* Navigation Menu */}
-        <nav
-  className={`${
-    isOpen ? 'flex' : 'hidden'
-  } md:flex flex-col md:flex-row absolute md:static top-16 left-0 w-full md:w-auto bg-gradient-to-br from-purple-900 to-blue-900 md:bg-transparent p-6 md:p-0 space-y-4 md:space-y-0 md:space-x-6 z-50`}
->
-
-          {navItems.map((item) => (
-            <motion.a
-              key={item.label}
-              href={item.href}
-              target={item.external ? '_blank' : undefined}
-              download={item.download}
-              whileHover={{ scale: 1.1, color: '#d1e8ff', rotateZ: 5 }}
-              className="hover:underline"
-              onClick={() => setIsOpen(false)} // Close menu on click (mobile)
-            >
-              {item.label}
-            </motion.a>
-          ))}
-        </nav>
+        <motion.nav
+          className={`${
+            isOpen ? 'block' : 'hidden'
+          } md:block absolute md:static top-20 left-0 w-full md:w-auto bg-gradient-to-br from-purple-900/90 to-blue-900/90 md:bg-transparent p-6 md:p-0 z-30 shadow-lg md:shadow-none rounded-b-xl md:rounded-none`}
+        >
+          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 divide-y divide-purple-700/50 md:divide-y-0">
+            {navItems.map((item) => (
+              <motion.a
+                key={item.label}
+                href={item.href}
+                target={item.external ? '_blank' : undefined}
+                download={item.download}
+                whileHover={{ scale: 1.1, color: '#bfdbfe', y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="text-lg font-medium text-gray-200 transition-colors duration-200 block md:inline-block pt-4 md:pt-0"
+                onClick={() => setIsOpen(false)}
+              >
+                <span className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-purple-800/50">
+                  <span className="text-xl text-purple-300">{item.icon}</span>
+                  <span>{item.label}</span>
+                </span>
+              </motion.a>
+            ))}
+          </div>
+        </motion.nav>
       </div>
     </motion.header>
   );
